@@ -44,7 +44,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->toArray());
+        // dd($request->toArray());
 
         $request->validate([
             'name' => 'required',
@@ -57,8 +57,8 @@ class UserController extends Controller
             'exam_id.*' => 'required',
             'board_id.*' => 'required',
             'university_id.*' => 'required',
-            'image' => 'required|mimes:jpeg,png',
-            'cv' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'cv' =>  'required|mimes:pdf,docs,doc',
             'training_name' => 'nullable',
             'training_details' => 'nullable',
 
@@ -89,37 +89,30 @@ class UserController extends Controller
                 $education_qualification->university_id = $request->university_id[$key];
                 $education_qualification->result = $request->result[$key];
 
-                if ($request->has('image')) {
+                if ($request->hasFile('image')) {
                     $image = $request->file('image');
-                    if ($image->getClientOriginalExtension() == 'png' || $image->getClientOriginalExtension() == 'jpeg') {
-                        $reImage = time() . '.' . $image->getClientOriginalExtension();
+                    $reImage = time() . '.' . $image->getClientOriginalExtension();
+                    if ($image->getClientOriginalExtension() == 'png' || $image->getClientOriginalExtension() == 'jpeg' || $image->getClientOriginalExtension() == 'jpg') {
                         $dest = public_path('/photo');
                         $image->move($dest, $reImage);
-
                         // save in database
                         $education_qualification->image = $reImage;
-                    }
-                    else {
+                    } else {
                         return back()->with('error', 'Please submit png or jpeg');
                     }
-
-
                 }
                 if ($request->has('cv')) {
                     $image = $request->file('cv');
+                    $reImage = time() . '.' . $image->getClientOriginalExtension();
                     if ($image->getClientOriginalExtension() == 'docx' || $image->getClientOriginalExtension() == 'pdf' || $image->getClientOriginalExtension() == 'doc') {
-                        $reImage = time() . '.' . $image->getClientOriginalExtension();
                         $dest = public_path('/CV');
                         $image->move($dest, $reImage);
 
                         // save in database
                         $education_qualification->cv = $reImage;
-                    }
-                    else {
+                    } else {
                         return back()->with('error', 'Please submit docs or pdf');
                     }
-
-
                 }
                 $education_qualification->save();
             }
@@ -133,7 +126,9 @@ class UserController extends Controller
                     $training->save();
                 }
             }
-            return back()->with('success', 'Data Submitted Successfully.');
+           
         });
+
+        return back()->with('success', 'Data Submitted Successfully.');
     }
 }

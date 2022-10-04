@@ -25,5 +25,6 @@ Route::get('/', function () {
  });
  //user part
  Route::get('/user',[UserController::class,'index'])->name('user.index');
+ Route::post('/user',[UserController::class,'store'])->name('user.store');
  Route::get('/get_all_district',[UserController::class,'getAllDistrict'])->name('get_all_district');
  Route::get('/get_all_thana',[UserController::class,'getAllThana'])->name('get_all_thana');

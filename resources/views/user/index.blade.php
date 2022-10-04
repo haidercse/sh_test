@@ -7,12 +7,14 @@
 @section('admin-content')
     <div class="container-fluid">
         <div class="col-md-12">
+            @include('backend.layouts.partials.message')
             <div class="card">
                 <div class="card-header">
                     <h3>User Registration Form</h3>
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="col-md-12">
                             <div class="form-group row">
                                 <label for="name" class="col-sm-2 col-form-label">Applicant's Name</label>
@@ -114,7 +116,7 @@
                                     <tbody id="student_exam_info">
                                         <tr>
                                             <td>
-                                                <select class="custom-select" name="exam_id" id="exam_id">
+                                                <select class="custom-select" name="exam_id[]" id="exam_id">
                                                     <option value="">Select Exam</option>
                                                     @foreach ($exams as $exam)
                                                         <option value="{{ $exam->id }}">{{ $exam->name }}
@@ -124,7 +126,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="custom-select" name="university_id" id="university_id">
+                                                <select class="custom-select" name="university_id[]" id="university_id">
                                                     <option value="">Select University</option>
                                                     @foreach ($univercities as $univercity)
                                                         <option value="{{ $univercity->id }}">{{ $univercity->name }}
@@ -133,7 +135,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="custom-select" name="board_id" id="board_id">
+                                                <select class="custom-select" name="board_id[]" id="board_id">
                                                     <option value="">Select Board</option>
 
                                                     @foreach ($boards as $board)
@@ -209,11 +211,11 @@
                                         <tbody id="training">
                                             <tr>
                                                 <td>
-                                                    <input type="text" name="training_name"
+                                                    <input type="text" name="training_name[]"
                                                         class=" form-control">
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="training_details"
+                                                    <input type="text" name="training_details[]"
                                                         class=" form-control">
                                                 </td>
 
@@ -226,7 +228,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
                     </form>
 
                 </div>
@@ -246,21 +248,21 @@
                 whole_extra_item_add += `
                 <tr class="delete_whole_extra_item_add">
                                         <td>
-                                            <select class="custom-select" name="exam_id" id="exam_id">
+                                            <select class="custom-select" name="exam_id[]" id="exam_id">
                                                 <option value="">Select Exam</option>
                                                 <option value="">1st exam</option>
                                                 <option value="">2nd Exam</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="custom-select" name="university_id" id="university_id">
+                                            <select class="custom-select" name="university_id[]" id="university_id">
                                                 <option value="">Select University</option>
                                                 <option value="">DIU</option>
                                                 <option value="">DU</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="custom-select" name="board_id" id="board_id">
+                                            <select class="custom-select" name="board_id[]" id="board_id">
                                                 <option value="">Select Board</option>
                                                 <option value="">Cumilla</option>
                                                 <option value="">Dhaka</option>
@@ -290,10 +292,10 @@
                 whole_extra_item_add_training += `
                  <tr class="delete_whole_extra_item_add_training">
                                                 <td>
-                                                    <input type="text" name="training_name" class=" form-control">
+                                                    <input type="text" name="training_name[]" class=" form-control">
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="training_details" class=" form-control">
+                                                    <input type="text" name="training_details[]" class=" form-control">
                                                 </td>
 
                                                 <td>
