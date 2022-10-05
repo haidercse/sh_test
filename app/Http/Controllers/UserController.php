@@ -188,10 +188,10 @@ class UserController extends Controller
 
             ->addIndexColumn()
 
-            ->addColumn('user_name', function ($row) {
+            ->addColumn('_user_name', function ($row) {
             return $row->user_name ?? '';
         })
-            ->addColumn('user_email', function ($row) {
+            ->addColumn('_user_email', function ($row) {
             return $row->user_email ?? '';
         })
             ->addColumn('_division', function ($row) {

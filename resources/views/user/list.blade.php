@@ -104,28 +104,28 @@
                             'searchable': true,
                         },
                         {
-                            "data": "user_name",
-                            'name': "users.name",
+                            "data": "_user_name",
+                            'name': "user_name",
                             'searchable': true,
                         },
                         {
-                            "data": "user_email",
-                            'name': "users.email",
+                            "data": "_user_email",
+                            'name': "user_email",
                             'searchable': true,
                         },
                         {
                             "data": "_division",
-                            'name': 'division.division_name',
+                            'name': 'division',
                             'searchable': true,
                         },
                         {
                             "data": "_district",
-                            "name": "district.district_name",
+                            "name": "district",
                             'searchable': true
                         },
                         {
                             "data": "_thana",
-                            'name': 'thana.thana_name',
+                            'name': 'thana',
                             'searchable': false,
                         },
                         {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -183,28 +183,28 @@
                             'searchable': true,
                         },
                         {
-                            "data": "user_name",
-                            'name': "users.name",
+                            "data": "_user_name",
+                            'name': "user_name",
                             'searchable': true,
                         },
                         {
-                            "data": "user_email",
-                            'name': "users.email",
+                            "data": "_user_email",
+                            'name': "user_email",
                             'searchable': true,
                         },
                         {
                             "data": "_division",
-                            'name': 'division.division_name',
+                            'name': 'division',
                             'searchable': true,
                         },
                         {
                             "data": "_district",
-                            "name": "district.district_name",
+                            "name": "district",
                             'searchable': true
                         },
                         {
                             "data": "_thana",
-                            'name': 'thana.thana_name',
+                            'name': 'thana',
                             'searchable': false,
                         },
                         {data: 'action', name: 'action', orderable: false, searchable: false},
