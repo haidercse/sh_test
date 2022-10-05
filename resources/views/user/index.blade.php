@@ -13,7 +13,8 @@
                     <h3>User Registration Form</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data"
+                        id="registration_form">
                         @csrf
                         <div class="col-md-12">
                             <div class="form-group row">
@@ -21,7 +22,11 @@
                                 <div class="col-sm-10">
                                     <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                         id="name">
+                                    @error('name')
+                                        <p class="alert alert-danger mt-1 mb-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
+
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -148,7 +153,8 @@
                                                 <input type="text" name="result" class="form-control">
                                             </td>
                                             <td>
-                                                <span class="btn btn-success addeventmore">Add More..</span>
+                                                <span class="btn btn-success addeventmore" id="add_more">Add
+                                                    More..</span>
                                             </td>
                                         </tr>
 
@@ -211,8 +217,7 @@
                                         <tbody id="training">
                                             <tr>
                                                 <td>
-                                                    <input type="text" name="training_name[]"
-                                                        class=" form-control">
+                                                    <input type="text" name="training_name[]" class=" form-control">
                                                 </td>
                                                 <td>
                                                     <input type="text" name="training_details[]"
@@ -239,37 +244,54 @@
 
 @push('custom-scripts')
     <script type="text/javascript">
+        if ($("#registration_form").length > 0) {
+            $("#registration_form").validate({
+                rules: {
+                    name: {
+                        required: true,
+
+                    },
+
+                },
+                messages: {
+                    name: {
+                        required: "Please enter title",
+                    },
+
+                },
+            })
+        }
         $(document).ready(function() {
 
-            var counter = 0;
-            var counter_training = 0;
+            var counter = 1;
+            var counter_training = 1;
             $(document).on("click", ".addeventmore", function() {
                 var whole_extra_item_add = '';
                 whole_extra_item_add += `
                 <tr class="delete_whole_extra_item_add">
                                         <td>
-                                            <select class="custom-select" name="exam_id[]" id="exam_id">
+                                            <select class="custom-select exam_id" name="exam_id[]" id="exam_id_${counter}">
                                                 <option value="">Select Exam</option>
-                                                <option value="">1st exam</option>
-                                                <option value="">2nd Exam</option>
+                                               
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="custom-select" name="university_id[]" id="university_id">
+                                            <select class="custom-select university_id" name="university_id[]" id="university_id_${counter}">
                                                 <option value="">Select University</option>
-                                                <option value="">DIU</option>
-                                                <option value="">DU</option>
+                                               
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="custom-select" name="board_id[]" id="board_id">
+                                            <select class="custom-select board_id" name="board_id[]" id="board_id_${counter}">
                                                 <option value="">Select Board</option>
-                                                <option value="">Cumilla</option>
-                                                <option value="">Dhaka</option>
+                                               
                                             </select>
                                         </td>
                                         <td>
-                                            <span class="btn btn-success addeventmore">Add</span>
+                                            <input type="text" name="result" class="form-control">
+                                        </td>
+                                        <td>
+                                            <span class="btn btn-success addeventmore " id="add_more">Add</span>
                                             <span class="btn btn-danger removeeventmore">Delete</span>
                                         </td>
                                     </tr>
@@ -405,8 +427,14 @@
             });
         }
 
-        function get_all_exam() {
-            
+        $("#add_more").click(function() {
+            get_all_exam();
+            get_all_university();
+            get_all_board();
+        })
+
+        function get_all_exam(id) {
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -417,25 +445,25 @@
                 type: "GET",
                 url: APP_URL,
                 dataType: "JSON",
-                
+
                 success: function(data) {
-                    $("#exam_id").html('');
+                    $(".exam_id").html('');
                     var op = '<option value="" >Select Exam</option>';
                     for (var i = 0; i < data.length; i++) {
                         op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
                     }
-                    $("#exam_id").html(op);
+                    $(".exam_id").html(op);
                 },
                 error: function() {
-                    $("#exam_id").html('');
+                    $(".exam_id").html('');
                     var op = '<option value="" >Select Exam</option>';
-                    $("#exam_id").html(op);
+                    $(".exam_id").html(op);
                 }
             });
         }
 
         function get_all_board() {
-            
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -446,24 +474,25 @@
                 type: "GET",
                 url: APP_URL,
                 dataType: "JSON",
-                
+
                 success: function(data) {
-                    $("#board_id").html('');
+                    $(".board_id").html('');
                     var op = '<option value="" >Select Board</option>';
                     for (var i = 0; i < data.length; i++) {
                         op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
                     }
-                    $("#board_id").html(op);
+                    $(".board_id").html(op);
                 },
                 error: function() {
-                    $("#board_id").html('');
+                    $(".board_id").html('');
                     var op = '<option value="" >Select Board</option>';
-                    $("#board_id").html(op);
+                    $(".board_id").html(op);
                 }
             });
         }
-        function get_all_university() {
-            
+
+        function get_all_university(id) {
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -474,19 +503,19 @@
                 type: "GET",
                 url: APP_URL,
                 dataType: "JSON",
-                
+
                 success: function(data) {
-                    $("#university_id").html('');
+                    $(".university_id").html('');
                     var op = '<option value="" >Select University</option>';
                     for (var i = 0; i < data.length; i++) {
                         op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
                     }
-                    $("#university_id").html(op);
+                    $(".university_id").html(op);
                 },
                 error: function() {
-                    $("#university_id").html('');
+                    $(".university_id").html('');
                     var op = '<option value="" >Select University</option>';
-                    $("#university_id").html(op);
+                    $(".university_id").html(op);
                 }
             });
         }
