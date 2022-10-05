@@ -14,3 +14,6 @@
     <link rel="stylesheet"  href="{{ asset('admin/assets/css/responsive.css') }}">
     <!-- modernizr css -->
     <script src="{{ asset('admin/assets/js/vendor/modernizr-2.8.3.min.js') }}"></script>
+
+    {{-- datatable --}}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/b-2.2.1/b-html5-2.2.1/datatables.min.css"/>

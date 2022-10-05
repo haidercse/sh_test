@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
@@ -58,7 +59,7 @@ class UserController extends Controller
             'board_id.*' => 'required',
             'university_id.*' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'cv' =>  'required|mimes:pdf,docs,doc',
+            'cv' => 'required|mimes:pdf,docs,doc',
             'training_name' => 'nullable',
             'training_details' => 'nullable',
 
@@ -97,7 +98,8 @@ class UserController extends Controller
                         $image->move($dest, $reImage);
                         // save in database
                         $education_qualification->image = $reImage;
-                    } else {
+                    }
+                    else {
                         return back()->with('error', 'Please submit png or jpeg');
                     }
                 }
@@ -110,7 +112,8 @@ class UserController extends Controller
 
                         // save in database
                         $education_qualification->cv = $reImage;
-                    } else {
+                    }
+                    else {
                         return back()->with('error', 'Please submit docs or pdf');
                     }
                 }
@@ -126,9 +129,91 @@ class UserController extends Controller
                     $training->save();
                 }
             }
-           
+
         });
 
         return back()->with('success', 'Data Submitted Successfully.');
+    }
+
+
+    public function showRegistrationList()
+    {
+        $divisions = Division::all();
+        $districts = District::all();
+        $thanas = Thana::all();
+        return view('user.list', compact('divisions', 'districts', 'thanas'));
+
+    }
+    public function showRegistrationListAjax(Request $request)
+    {
+
+        $name = $request->name;
+        $email = $request->email;
+
+        $users = DB::table('mailing_addresses')
+            ->join('users', 'users.id', 'mailing_addresses.user_id')
+            ->join('divisions', 'divisions.id', 'mailing_addresses.division_id')
+            ->join('districts', 'districts.id', 'mailing_addresses.district_id')
+            ->join('thanas', 'thanas.id', 'mailing_addresses.thana_id')
+            ->select('mailing_addresses.id as mailing_id', 'users.name as user_name', 'users.email as user_email', 'divisions.division_name as division', 'districts.district_name as district', 'thanas.thana_name as thana')
+
+            ->when($request->name, function ($query) use ($request, $name) {
+            $get_users = [];
+            $get_users = DB::table('users')
+                ->where('name', 'like', '%' . $name . '%')
+                ->pluck('id');
+            return $query->whereIn('mailing_addresses.user_id', $get_users);
+        })
+            ->when($request->email, function ($query) use ($request, $email) {
+            $get_email = [];
+            $get_email = DB::table('users')
+                ->where('email', $email)
+                ->pluck('id');
+            return $query->whereIn('mailing_addresses.user_id', $get_email);
+        })
+            ->when($request->division_id, function ($query) use ($request) {
+
+            return $query->where('mailing_addresses.division_id', $request->division_id);
+        })
+            ->when($request->district_id, function ($query) use ($request) {
+            return $query->where('mailing_addresses.district_id', $request->district_id);
+        })
+            ->when($request->thana_id, function ($query) use ($request) {
+            return $query->where('mailing_addresses.thana_id', $request->thana_id);
+        })
+
+            ->get();
+
+        $result = DataTables::of($users)
+
+            ->addIndexColumn()
+
+            ->addColumn('user_name', function ($row) {
+            return $row->user_name ?? '';
+        })
+            ->addColumn('user_email', function ($row) {
+            return $row->user_email ?? '';
+        })
+            ->addColumn('_division', function ($row) {
+            return $row->division ?? '';
+        })
+            ->addColumn('_district', function ($row) {
+            return $row->district ?? '';
+        })
+            ->addColumn('_thana', function ($row) {
+            return $row->thana ?? '';
+        })
+            ->addColumn('action', function ($row) {
+            return '
+                <a href="' . route('registration.edit', $row->mailing_id) . '" title="Edit" class="edit btn btn-primary">Edit</a>
+                ';
+        })
+            ->rawColumns(['action'])
+
+            ->make(true);
+
+
+        return $result;
+
     }
 }

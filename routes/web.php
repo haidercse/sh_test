@@ -21,6 +21,9 @@ Route::get('/', function () {
 
  Route::group(['prefix'=>'admin'], function(){
      Route::get('/dashboard',[AdminController::class,'index']);
+     Route::get('/registration_list',[UserController::class,'showRegistrationList'])->name('registration.list');
+     Route::get('/registration_list/ajax',[UserController::class,'showRegistrationListAjax'])->name('registration.list.ajax');
+     Route::get('/registration_edit/{id}',[UserController::class,'showRegistrationListEdit'])->name('registration.edit');
     
  });
  //user part

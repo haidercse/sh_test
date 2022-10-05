@@ -24,3 +24,7 @@ ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3eda
 <!-- others plugins -->
 <script src="{{ asset('admin/assets/js/plugins.js') }}"></script>
 <script src="{{ asset('admin/assets/js/scripts.js') }}"></script>
+
+{{-- data table --}}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.3/b-2.2.1/b-html5-2.2.1/datatables.min.js">
+</script>
