@@ -404,5 +404,91 @@
                 }
             });
         }
+
+        function get_all_exam() {
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var APP_URL = "{{ route('get_all_exam') }}";
+            $.ajax({
+                type: "GET",
+                url: APP_URL,
+                dataType: "JSON",
+                
+                success: function(data) {
+                    $("#exam_id").html('');
+                    var op = '<option value="" >Select Exam</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                    }
+                    $("#exam_id").html(op);
+                },
+                error: function() {
+                    $("#exam_id").html('');
+                    var op = '<option value="" >Select Exam</option>';
+                    $("#exam_id").html(op);
+                }
+            });
+        }
+
+        function get_all_board() {
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var APP_URL = "{{ route('get_all_board') }}";
+            $.ajax({
+                type: "GET",
+                url: APP_URL,
+                dataType: "JSON",
+                
+                success: function(data) {
+                    $("#board_id").html('');
+                    var op = '<option value="" >Select Board</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                    }
+                    $("#board_id").html(op);
+                },
+                error: function() {
+                    $("#board_id").html('');
+                    var op = '<option value="" >Select Board</option>';
+                    $("#board_id").html(op);
+                }
+            });
+        }
+        function get_all_university() {
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var APP_URL = "{{ route('get_all_university') }}";
+            $.ajax({
+                type: "GET",
+                url: APP_URL,
+                dataType: "JSON",
+                
+                success: function(data) {
+                    $("#university_id").html('');
+                    var op = '<option value="" >Select University</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        op += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                    }
+                    $("#university_id").html(op);
+                },
+                error: function() {
+                    $("#university_id").html('');
+                    var op = '<option value="" >Select University</option>';
+                    $("#university_id").html(op);
+                }
+            });
+        }
     </script>
 @endpush

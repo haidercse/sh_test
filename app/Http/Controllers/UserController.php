@@ -259,4 +259,17 @@ class UserController extends Controller
 
         return back()->with('success', 'data updated successfully.');
     }
+
+    public function getAllExam(){
+        $exam = Exam::all();
+        return response()->json($exam);
+    }
+    public function getAllBoard(){
+        $board = Board::all();
+        return response()->json($board);
+    }
+    public function getAllUniversity(){
+        $university = University::all();
+        return response()->json($university);
+    }
 }

@@ -19,7 +19,7 @@ Route::get('/', function () {
     return redirect()->route('user.index');
 });
 
- Route::group(['prefix'=>'admin'], function(){
+ Route::group(['prefix'=>'admin','middleware'=>'auth'], function(){
      Route::get('/dashboard',[AdminController::class,'index']);
      Route::get('/registration_list',[UserController::class,'showRegistrationList'])->name('registration.list');
      Route::get('/registration_list/ajax',[UserController::class,'showRegistrationListAjax'])->name('registration.list.ajax');
@@ -33,3 +33,11 @@ Route::get('/', function () {
  Route::post('/user',[UserController::class,'store'])->name('user.store');
  Route::get('/get_all_district',[UserController::class,'getAllDistrict'])->name('get_all_district');
  Route::get('/get_all_thana',[UserController::class,'getAllThana'])->name('get_all_thana');
+ Route::get('/get_all_exam',[UserController::class,'getAllExam'])->name('get_all_exam');
+ Route::get('/get_all_board',[UserController::class,'getAllBoard'])->name('get_all_board');
+ Route::get('/get_all_university',[UserController::class,'getAllUniversity'])->name('get_all_university');
+ 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
