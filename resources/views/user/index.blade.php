@@ -22,9 +22,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                         id="name">
-                                    @error('name')
-                                        <p class="alert alert-danger mt-1 mb-1">{{ $message }}</p>
-                                    @enderror
+                                   
                                 </div>
 
                             </div>
@@ -33,8 +31,9 @@
                             <div class="form-group row">
                                 <label for="email" class="col-sm-2 col-form-label">Email Address</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="email" value="{{ old('email') }}" class="form-control"
+                                    <input type="email" name="email" value="{{ old('email') }}" class="form-control"
                                         id="email">
+                                   
                                 </div>
                             </div>
                         </div>
@@ -45,26 +44,23 @@
                             <div class="col-md-4">
                                 <select name="division_id" class="custom-select" id="division_id">
                                     <option value="">Select Division</option>
-                                    @foreach ($divisions as $division)
-                                        <option value="{{ $division->id }}">{{ $division->division_name }}</option>
-                                    @endforeach
+                                   
                                 </select>
+                               
                             </div>
                             <div class="col-md-4">
                                 <select name="district_id" class="custom-select" id="district_id">
                                     <option value="">Select District</option>
-                                    @foreach ($districts as $district)
-                                        <option value="{{ $district->id }}">{{ $district->district_name }}</option>
-                                    @endforeach
+                                   
                                 </select>
+                               
                             </div>
                             <div class="col-md-4">
                                 <select name="thana_id" class="custom-select" id="thana_id">
                                     <option value="">Select Thana</option>
-                                    @foreach ($thanas as $thana)
-                                        <option value="{{ $thana->id }}">{{ $thana->thana_name }}</option>
-                                    @endforeach
+                                  
                                 </select>
+                               
                             </div>
                         </div>
                         <hr>
@@ -75,6 +71,7 @@
                                     <textarea name="address" id="address" cols="10" rows="10" class="form-control" placeholder="Address...">{{ old('address') }}
                                     </textarea>
                                 </div>
+                              
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -101,6 +98,7 @@
                                         <label class="form-check-label" for="french">French</label>
                                     </div>
                                 </div>
+                             
                             </div>
                         </div>
                         <hr>
@@ -127,8 +125,8 @@
                                                         <option value="{{ $exam->id }}">{{ $exam->name }}
                                                         </option>
                                                     @endforeach
-
                                                 </select>
+                                              
                                             </td>
                                             <td>
                                                 <select class="custom-select" name="university_id[]" id="university_id">
@@ -138,6 +136,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                               
                                             </td>
                                             <td>
                                                 <select class="custom-select" name="board_id[]" id="board_id">
@@ -148,6 +147,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                               
                                             </td>
                                             <td>
                                                 <input type="text" name="result" class="form-control">
@@ -169,6 +169,7 @@
                                 <div class="col-sm-10">
                                     <input type="file" name="image" class="form-control" id="file_image">
                                 </div>
+                               
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -178,6 +179,7 @@
                                 <div class="col-sm-10">
                                     <input type="file" name="cv" class="form-control" id="file_cv">
                                 </div>
+                               
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -218,10 +220,12 @@
                                             <tr>
                                                 <td>
                                                     <input type="text" name="training_name[]" class=" form-control">
+                                                   
                                                 </td>
                                                 <td>
                                                     <input type="text" name="training_details[]"
                                                         class=" form-control">
+                                                      
                                                 </td>
 
                                                 <td>
@@ -244,24 +248,8 @@
 
 @push('custom-scripts')
     <script type="text/javascript">
-        if ($("#registration_form").length > 0) {
-            $("#registration_form").validate({
-                rules: {
-                    name: {
-                        required: true,
-
-                    },
-
-                },
-                messages: {
-                    name: {
-                        required: "Please enter title",
-                    },
-
-                },
-            })
-        }
         $(document).ready(function() {
+            
 
             var counter = 1;
             var counter_training = 1;
@@ -338,6 +326,9 @@
             });
         })
 
+
+        // form submit by ajax
+       
         //yes no
         var yes = $("#yes").click(function() {
 
@@ -347,9 +338,6 @@
 
             $("#add_training").css("display", "none");
         })
-
-
-
 
 
         $("#division_id").change(function() {

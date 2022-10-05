@@ -17,6 +17,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Services\FileUpload;
 use Exception;
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -57,8 +58,8 @@ class UserController extends Controller
     {
         // dd($request->toArray());
       
-        $request->validated();
-        
+        // $request->validated();
+    
         try {
             DB::transaction(function () use ($request) {
 
