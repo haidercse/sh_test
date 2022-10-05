@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dashboard-page
+    Registration Page
 @endsection
 
 @section('admin-content')

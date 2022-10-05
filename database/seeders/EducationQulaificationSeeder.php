@@ -20,8 +20,6 @@ class EducationQulaificationSeeder extends Seeder
             'university_id' => 1,
             'board_id' => 1,
             'result' => '4.00',
-            'cv' => 'cv.pdf',
-            'image' => 'image.png',
         ]);
 
     }

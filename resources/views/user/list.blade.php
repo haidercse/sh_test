@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    Dashboard-page
+   Registration List Page
 @endsection
 
 @section('admin-content')
@@ -69,6 +69,7 @@
                                 <th>Division</th>
                                 <th>District</th>
                                 <th>Thana/Upozilla</th>
+                                <th>Insert Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -126,7 +127,12 @@
                         {
                             "data": "_thana",
                             'name': 'thana',
-                            'searchable': false,
+                            'searchable': true,
+                        },
+                        {
+                            "data": "_insert_date",
+                            'name': 'insert_date',
+                            'searchable': true,
                         },
                         {data: 'action', name: 'action', orderable: false, searchable: false},
                     ],
@@ -205,7 +211,12 @@
                         {
                             "data": "_thana",
                             'name': 'thana',
-                            'searchable': false,
+                            'searchable': true,
+                        },
+                        {
+                            "data": "_insert_date",
+                            'name': 'insert_date',
+                            'searchable': true,
                         },
                         {data: 'action', name: 'action', orderable: false, searchable: false},
                     ],

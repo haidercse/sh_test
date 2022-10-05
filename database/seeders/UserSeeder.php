@@ -18,9 +18,6 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'admin',
-            'division_id' => 1,
-            'district_id' => 1,
-            'thana_id' => 1,
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('12345678'),
@@ -31,9 +28,6 @@ class UserSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             User::create([
                 'name' => 'user_' . $i,
-                'division_id' => 1,
-                'district_id' => 1,
-                'thana_id' => 1,
                 'email' => 'user_' . $i . '_@gmail.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('12345678'),

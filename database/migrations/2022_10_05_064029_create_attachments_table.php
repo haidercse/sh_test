@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEducationQualificationsTable extends Migration
+class CreateAttachmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateEducationQualificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('education_qualifications', function (Blueprint $table) {
+        Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id');
-            $table->string('exam_id');
-            $table->string('university_id');
-            $table->string('board_id');
-            $table->string('result');
+            $table->string('image');
+            $table->string('cv');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateEducationQualificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('education_qualifications');
+        Schema::dropIfExists('attachments');
     }
 }

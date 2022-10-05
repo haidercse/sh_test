@@ -24,8 +24,10 @@ Route::get('/', function () {
      Route::get('/registration_list',[UserController::class,'showRegistrationList'])->name('registration.list');
      Route::get('/registration_list/ajax',[UserController::class,'showRegistrationListAjax'])->name('registration.list.ajax');
      Route::get('/registration_edit/{id}',[UserController::class,'showRegistrationListEdit'])->name('registration.edit');
+     Route::post('/registration_update/{id}',[UserController::class,'showRegistrationListUpdate'])->name('registration.update');
     
  });
+ 
  //user part
  Route::get('/user',[UserController::class,'index'])->name('user.index');
  Route::post('/user',[UserController::class,'store'])->name('user.store');

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BoardSeeder::class,
             UniversitySeeder::class,
             EducationQulaificationSeeder::class ,
+            AttachmentSeeder::class,
         ]);
     }
 }
