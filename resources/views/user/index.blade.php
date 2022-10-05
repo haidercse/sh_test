@@ -13,7 +13,8 @@
                     <h3>User Registration Form</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data"
+                  
+                    <form action="{{ route('user.store') }}"  method="POST" enctype="multipart/form-data"
                         id="registration_form">
                         @csrf
                         <div class="col-md-12">
@@ -44,21 +45,27 @@
                             <div class="col-md-4">
                                 <select name="division_id" class="custom-select" id="division_id">
                                     <option value="">Select Division</option>
-                                   
+                                     @foreach ($divisions as $division)
+                                         <option value="{{ $division->id }}">{{ $division->division_name }}</option>
+                                     @endforeach
                                 </select>
                                
                             </div>
                             <div class="col-md-4">
                                 <select name="district_id" class="custom-select" id="district_id">
                                     <option value="">Select District</option>
-                                   
+                                   @foreach ($districts as $district)
+                                   <option value="{{ $district->id }}">{{ $district->district_name }}</option>
+                                   @endforeach
                                 </select>
                                
                             </div>
                             <div class="col-md-4">
                                 <select name="thana_id" class="custom-select" id="thana_id">
                                     <option value="">Select Thana</option>
-                                  
+                                    @foreach ($thanas as $thana)
+                                    <option value="{{ $thana->id }}">{{ $thana->thana_name }}</option>
+                                    @endforeach
                                 </select>
                                
                             </div>
@@ -249,8 +256,7 @@
 @push('custom-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            
-
+           
             var counter = 1;
             var counter_training = 1;
             $(document).on("click", ".addeventmore", function() {

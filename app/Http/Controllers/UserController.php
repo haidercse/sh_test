@@ -59,7 +59,7 @@ class UserController extends Controller
         // dd($request->toArray());
       
         // $request->validated();
-    
+       
         try {
             DB::transaction(function () use ($request) {
 
