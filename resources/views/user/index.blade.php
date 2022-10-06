@@ -13,9 +13,8 @@
                     <h3>User Registration Form</h3>
                 </div>
                 <div class="card-body">
-                  
-                    <form action="{{ route('user.store') }}"  method="POST" enctype="multipart/form-data"
-                        id="registration_form">
+                    {{-- action="{{ route('user.store') }}" --}}
+                    <form method="POST" enctype="multipart/form-data" id="registration_form">
                         @csrf
                         <div class="col-md-12">
                             <div class="form-group row">
@@ -23,7 +22,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                         id="name">
-                                   
+
                                 </div>
 
                             </div>
@@ -34,7 +33,7 @@
                                 <div class="col-sm-10">
                                     <input type="email" name="email" value="{{ old('email') }}" class="form-control"
                                         id="email">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -45,29 +44,29 @@
                             <div class="col-md-4">
                                 <select name="division_id" class="custom-select" id="division_id">
                                     <option value="">Select Division</option>
-                                     @foreach ($divisions as $division)
-                                         <option value="{{ $division->id }}">{{ $division->division_name }}</option>
-                                     @endforeach
+                                    @foreach ($divisions as $division)
+                                        <option value="{{ $division->id }}">{{ $division->division_name }}</option>
+                                    @endforeach
                                 </select>
-                               
+
                             </div>
                             <div class="col-md-4">
                                 <select name="district_id" class="custom-select" id="district_id">
                                     <option value="">Select District</option>
-                                   @foreach ($districts as $district)
-                                   <option value="{{ $district->id }}">{{ $district->district_name }}</option>
-                                   @endforeach
+                                    @foreach ($districts as $district)
+                                        <option value="{{ $district->id }}">{{ $district->district_name }}</option>
+                                    @endforeach
                                 </select>
-                               
+
                             </div>
                             <div class="col-md-4">
                                 <select name="thana_id" class="custom-select" id="thana_id">
                                     <option value="">Select Thana</option>
                                     @foreach ($thanas as $thana)
-                                    <option value="{{ $thana->id }}">{{ $thana->thana_name }}</option>
+                                        <option value="{{ $thana->id }}">{{ $thana->thana_name }}</option>
                                     @endforeach
                                 </select>
-                               
+
                             </div>
                         </div>
                         <hr>
@@ -78,7 +77,7 @@
                                     <textarea name="address" id="address" cols="10" rows="10" class="form-control" placeholder="Address...">{{ old('address') }}
                                     </textarea>
                                 </div>
-                              
+
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -105,7 +104,7 @@
                                         <label class="form-check-label" for="french">French</label>
                                     </div>
                                 </div>
-                             
+
                             </div>
                         </div>
                         <hr>
@@ -133,7 +132,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                              
+
                                             </td>
                                             <td>
                                                 <select class="custom-select" name="university_id[]" id="university_id">
@@ -143,7 +142,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                               
+
                                             </td>
                                             <td>
                                                 <select class="custom-select" name="board_id[]" id="board_id">
@@ -154,7 +153,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                               
+
                                             </td>
                                             <td>
                                                 <input type="text" name="result" class="form-control">
@@ -176,7 +175,7 @@
                                 <div class="col-sm-10">
                                     <input type="file" name="image" class="form-control" id="file_image">
                                 </div>
-                               
+
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -186,7 +185,7 @@
                                 <div class="col-sm-10">
                                     <input type="file" name="cv" class="form-control" id="file_cv">
                                 </div>
-                               
+
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -227,12 +226,12 @@
                                             <tr>
                                                 <td>
                                                     <input type="text" name="training_name[]" class=" form-control">
-                                                   
+
                                                 </td>
                                                 <td>
                                                     <input type="text" name="training_details[]"
                                                         class=" form-control">
-                                                      
+
                                                 </td>
 
                                                 <td>
@@ -244,7 +243,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success" id="submit_button">Submit</button>
                     </form>
 
                 </div>
@@ -256,7 +255,36 @@
 @push('custom-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-           
+
+            $("#submit_button").click(function(e) {
+                e.preventDefault();
+                var name = $("#name").val();
+                var email = $("#email").val();
+                var address = $("#address").val();
+                var division_id = $("#division_id").val();
+                var distrcit_id = $("#distrcit_id").val();
+                var thana_id = $("#thana_id").val();
+                
+                var exam_id = $("select[name=\'exam_id[]\']")
+                    .map(function() {
+                        return $(this).val();
+                    }).get();
+                var board_id = $("select[name=\'board_id[]\']")
+                    .map(function() {
+                        return $(this).val();
+                    }).get();
+                var university_id = $("select[name=\'university_id[]\']")
+                    .map(function() {
+                        return $(this).val();
+                    }).get();
+
+                var arr = $('input[name="pname[]"]').map(function() {
+                    return this.value; // $(this).val()
+                }).get();
+                console.log(values);
+            });
+
+
             var counter = 1;
             var counter_training = 1;
             $(document).on("click", ".addeventmore", function() {
@@ -334,7 +362,7 @@
 
 
         // form submit by ajax
-       
+
         //yes no
         var yes = $("#yes").click(function() {
 
