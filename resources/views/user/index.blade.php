@@ -143,7 +143,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <p style="display: none; color:red" id="error_exam_id">Please select your picture</p>
+                                                <p style="display: none; color:red" class="error_exam_id">Please Select Your Exam</p>
 
                                             </td>
                                             <td>
@@ -197,7 +197,7 @@
                                     PDF,DOCS)</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="cv" class="form-control" id="file_cv">
-                                    <p style="display: none; color:red" id="error_cv">Please attach your picture</p>
+                                    <p style="display: none; color:red" id="error_cv">Please attach your CV</p>
                                 </div>
 
                             </div>
@@ -303,7 +303,9 @@
                 var training_details = $('input[name="training_details[]"]').map(function() {
                     return this.value; // $(this).val()
                 }).get();
+                console.log(exam_id.length);
 
+                //frontend validation
                 if (name == '') {
                     $("#error_name").css('display', 'block');
 
@@ -327,7 +329,10 @@
                     $("#error_cv").css('display', 'block');
                 }
                 if(exam_id == ''){
-                    $("#error_exam_id").css('display', 'block');
+                    for (let index = 0; index < exam_id.length; index++) {
+                        console.log('***');
+                        $(".error_exam_id").css('display', 'block');
+                    }
                 }
 
                 $.ajax({
@@ -384,6 +389,7 @@
                                                 <option value="">Select Exam</option>
                                                
                                             </select>
+                                            <p style="display: none; color:red" class="error_exam_id">Please Select Your Exam</p>
                                         </td>
                                         <td>
                                             <select class="custom-select university_id" name="university_id[]" id="university_id_${counter}">
