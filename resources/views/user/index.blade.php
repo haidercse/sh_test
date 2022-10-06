@@ -7,7 +7,10 @@
 @section('admin-content')
     <div class="container-fluid">
         <div class="col-md-12">
-            @include('backend.layouts.partials.message')
+            {{-- @include('backend.layouts.partials.message') --}}
+            <div class="alert alert-danger print-error-msg" style="display:none">
+                <ul></ul>
+            </div>
             <div class="card">
                 <div class="card-header">
                     <h3>User Registration Form</h3>
@@ -258,13 +261,18 @@
 
             $("#submit_button").click(function(e) {
                 e.preventDefault();
+                alert("ok");
+                var _token = $("input[name='_token']").val();
                 var name = $("#name").val();
                 var email = $("#email").val();
                 var address = $("#address").val();
                 var division_id = $("#division_id").val();
                 var distrcit_id = $("#distrcit_id").val();
                 var thana_id = $("#thana_id").val();
-                
+                var image = $("#file_image").val();
+                var cv = $("#file_cv").val();
+
+
                 var exam_id = $("select[name=\'exam_id[]\']")
                     .map(function() {
                         return $(this).val();
@@ -278,18 +286,58 @@
                         return $(this).val();
                     }).get();
 
-                var arr = $('input[name="pname[]"]').map(function() {
+                var training_name = $('input[name="training_name[]"]').map(function() {
                     return this.value; // $(this).val()
                 }).get();
-                console.log(values);
+                var training_details = $('input[name="training_details[]"]').map(function() {
+                    return this.value; // $(this).val()
+                }).get();
+
+                $.ajax({
+                    url: "{{ route('user.store') }}",
+                    type: 'POST',
+                    data: {
+                        _token: _token,
+                        name: name,
+                        email: email,
+                        address: address,
+                        division_id: division_id,
+                        distrcit_id: distrcit_id,
+                        thana_id: thana_id,
+                        image: image,
+                        cv: cv,
+                        exam_id: exam_id,
+                        board_id: board_id,
+                        university_id: university_id,
+                        training_name: training_name,
+                        training_details: training_details,
+                    },
+                    success: function(data) {
+                        if ($.isEmptyObject(data.error)) {
+                            alert(data.success);
+                        } else {
+                            printErrorMsg(data.error);
+                        }
+                    }
+                });
+
             });
 
+            function printErrorMsg(msg) {
+                $(".print-error-msg").find("ul").html('');
+                $(".print-error-msg").css('display', 'block');
+                $.each(msg, function(key, value) {
+                    $(".print-error-msg").find("ul").append('<li>' + value + '</li>');
+                });
+            }
+        });
 
-            var counter = 1;
-            var counter_training = 1;
-            $(document).on("click", ".addeventmore", function() {
-                var whole_extra_item_add = '';
-                whole_extra_item_add += `
+
+        var counter = 1;
+        var counter_training = 1;
+        $(document).on("click", ".addeventmore", function() {
+            var whole_extra_item_add = '';
+            whole_extra_item_add += `
                 <tr class="delete_whole_extra_item_add">
                                         <td>
                                             <select class="custom-select exam_id" name="exam_id[]" id="exam_id_${counter}">
@@ -320,20 +368,21 @@
                                 </div>   
                 
                 `;
-                tableBody = $("#student_exam_info");
-                tableBody.append(whole_extra_item_add);
-                // $(".add_item").append(whole_extra_item_add);
-                counter++;
-            });
-            $(document).on("click", ".removeeventmore", function(event) {
-                var whole_extra_item_add = $("#whole_extra_item_add").html();
-                $(this).closest(".delete_whole_extra_item_add").remove();
-                counter -= 1;
-            });
+            tableBody = $("#student_exam_info");
+            tableBody.append(whole_extra_item_add);
+            // $(".add_item").append(whole_extra_item_add);
+            counter++;
+        });
+        
+        $(document).on("click", ".removeeventmore", function(event) {
+            var whole_extra_item_add = $("#whole_extra_item_add").html();
+            $(this).closest(".delete_whole_extra_item_add").remove();
+            counter -= 1;
+        });
 
-            $(document).on("click", ".addeventmore_training", function() {
-                var whole_extra_item_add_training = '';
-                whole_extra_item_add_training += `
+        $(document).on("click", ".addeventmore_training", function() {
+            var whole_extra_item_add_training = '';
+            whole_extra_item_add_training += `
                  <tr class="delete_whole_extra_item_add_training">
                                                 <td>
                                                     <input type="text" name="training_name[]" class=" form-control">
@@ -349,16 +398,17 @@
                                             </tr>
                 
                 `;
-                tableBody_training = $("#training");
-                tableBody_training.append(whole_extra_item_add_training);
-                counter_training++;
-            });
-            $(document).on("click", ".removeeventmore_training", function(event) {
-                var whole_extra_item_add = $("#whole_extra_item_add").html();
-                $(this).closest(".delete_whole_extra_item_add_training").remove();
-                counter_training -= 1;
-            });
-        })
+            tableBody_training = $("#training");
+            tableBody_training.append(whole_extra_item_add_training);
+            counter_training++;
+        });
+
+        $(document).on("click", ".removeeventmore_training", function(event) {
+            var whole_extra_item_add = $("#whole_extra_item_add").html();
+            $(this).closest(".delete_whole_extra_item_add_training").remove();
+            counter_training -= 1;
+        });
+
 
 
         // form submit by ajax
