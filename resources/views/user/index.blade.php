@@ -26,10 +26,10 @@
                                 <div class="col-sm-10">
                                     <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                         id="name">
-                                        <p  style="display: none; color:red" id="error_name">Please Input Your Name
-                                        </p>
+                                    <p style="display: none; color:red" id="error_name">Please Input Your Name
+                                    </p>
                                 </div>
-                               
+
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -38,10 +38,10 @@
                                 <div class="col-sm-10">
                                     <input type="email" name="email" value="{{ old('email') }}" class="form-control"
                                         id="email">
-                                        <p style="display: none; color:red" id="error_email">Please Input Your Email
-                                        </p>
+                                    <p style="display: none; color:red" id="error_email">Please Input Your Email
+                                    </p>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <hr>
@@ -55,7 +55,7 @@
                                         <option value="{{ $division->id }}">{{ $division->division_name }}</option>
                                     @endforeach
                                 </select>
-                                <p  style="display: none;color:red" id="error_division_id">Please Select
+                                <p style="display: none;color:red" id="error_division_id">Please Select
                                     Division</p>
                             </div>
 
@@ -66,7 +66,7 @@
                                         <option value="{{ $district->id }}">{{ $district->district_name }}</option>
                                     @endforeach
                                 </select>
-                                <p  style="display: none; color:red" id="error_district_id">Please Select
+                                <p style="display: none; color:red" id="error_district_id">Please Select
                                     District</p>
                             </div>
                             <div class="col-md-4">
@@ -143,6 +143,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                <p style="display: none; color:red" id="error_exam_id">Please select your picture</p>
 
                                             </td>
                                             <td>
@@ -185,6 +186,7 @@
                                 <label for="file_image" class="col-sm-2 col-form-label">Photo(Only Image)</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="image" class="form-control" id="file_image">
+                                    <p style="display: none; color:red" id="error_image">Please attach your picture</p>
                                 </div>
 
                             </div>
@@ -195,6 +197,7 @@
                                     PDF,DOCS)</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="cv" class="form-control" id="file_cv">
+                                    <p style="display: none; color:red" id="error_cv">Please attach your picture</p>
                                 </div>
 
                             </div>
@@ -316,6 +319,15 @@
                 }
                 if (thana_id == '') {
                     $("#error_thana_id").css('display', 'block');
+                }
+                if (image == '') {
+                    $("#error_image").css('display', 'block');
+                }
+                if (cv == '') {
+                    $("#error_cv").css('display', 'block');
+                }
+                if(exam_id == ''){
+                    $("#error_exam_id").css('display', 'block');
                 }
 
                 $.ajax({
