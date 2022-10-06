@@ -18,7 +18,7 @@
                 </div>
                 <div class="card-body">
                     {{-- action="{{ route('user.store') }}" --}}
-                    <form method="POST" enctype="multipart/form-data" id="registration_form">
+                    <for name="registrationform" method="POST" enctype="multipart/form-data" id="registration_form">
                         @csrf
                         <div class="col-md-12">
                             <div class="form-group row">
@@ -115,7 +115,8 @@
                                         <label class="form-check-label" for="french">French</label>
                                     </div>
                                 </div>
-
+                                <p style="display: none; color:red" id="error_language">Please Select
+                                    Language</p>
                             </div>
                         </div>
                         <hr>
@@ -143,7 +144,8 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <p style="display: none; color:red" class="error_exam_id">Please Select Your Exam</p>
+                                                <p style="display: none; color:red" id="error_exam_id_0">Please Select
+                                                    Your Exam</p>
 
                                             </td>
                                             <td>
@@ -154,7 +156,9 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-
+                                                <p style="display: none; color:red" id="error_university_id_0">Please
+                                                    Select
+                                                    Your University</p>
                                             </td>
                                             <td>
                                                 <select class="custom-select" name="board_id[]" id="board_id">
@@ -165,7 +169,8 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-
+                                                <p style="display: none; color:red" id="error_board_id_0">Please Select
+                                                    Your Board</p>
                                             </td>
                                             <td>
                                                 <input type="text" name="result" class="form-control">
@@ -240,12 +245,14 @@
                                             <tr>
                                                 <td>
                                                     <input type="text" name="training_name[]" class=" form-control">
-
+                                                    <p style="display: none; color:red" id="error_training_name_0">Please Input
+                                                        Your Training Name</p>
                                                 </td>
                                                 <td>
                                                     <input type="text" name="training_details[]"
                                                         class=" form-control">
-
+                                                        <p style="display: none; color:red" id="error_training_details_0">Please Input
+                                                            Your Training Details</p>
                                                 </td>
 
                                                 <td>
@@ -258,7 +265,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success" id="submit_button">Submit</button>
-                    </form>
+                    </for>
 
                 </div>
             </div>
@@ -269,6 +276,15 @@
 @push('custom-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            // $("#registrationform").validate({
+            //     rules: {
+            //         "exam_id[]": "required"
+            //     },
+            //     messages: {
+            //         "exam_id[]": "Please select field option",
+            //     }
+            // });
+
 
             $("#submit_button").click(function(e) {
                 e.preventDefault();
@@ -288,6 +304,7 @@
                     .map(function() {
                         return $(this).val();
                     }).get();
+
                 var board_id = $("select[name=\'board_id[]\']")
                     .map(function() {
                         return $(this).val();
@@ -303,7 +320,7 @@
                 var training_details = $('input[name="training_details[]"]').map(function() {
                     return this.value; // $(this).val()
                 }).get();
-                console.log(exam_id.length);
+
 
                 //frontend validation
                 if (name == '') {
@@ -328,12 +345,20 @@
                 if (cv == '') {
                     $("#error_cv").css('display', 'block');
                 }
-                if(exam_id == ''){
-                    for (let index = 0; index < exam_id.length; index++) {
-                        console.log('***');
-                        $(".error_exam_id").css('display', 'block');
+
+                var exam_length = exam_id.length;
+                console.log(exam_length);
+                console.log('Exam id: ' + exam_id);
+                for (var i = 0; i < exam_length; i++) {
+                    if ($('#error_exam_id_' + i)) {
+                        $("#error_exam_id_" + i).css('display', 'block');
                     }
                 }
+                // if (exam_id == '') {
+
+                //     $(".error_exam_id").css('display', 'block');
+
+                // }
 
                 $.ajax({
                     url: "{{ route('user.store') }}",
@@ -389,19 +414,22 @@
                                                 <option value="">Select Exam</option>
                                                
                                             </select>
-                                            <p style="display: none; color:red" class="error_exam_id">Please Select Your Exam</p>
+                                            <p style="display: none; color:red" id="error_exam_id_${counter}">Please Select Your Exam</p>
                                         </td>
                                         <td>
                                             <select class="custom-select university_id" name="university_id[]" id="university_id_${counter}">
                                                 <option value="">Select University</option>
                                                
                                             </select>
+                                            <p style="display: none; color:red" id="error_university_id_${counter}">Please Select
+                                                    Your University</p>
                                         </td>
                                         <td>
                                             <select class="custom-select board_id" name="board_id[]" id="board_id_${counter}">
                                                 <option value="">Select Board</option>
-                                               
                                             </select>
+                                            <p style="display: none; color:red" id="error_board_id_${counter}">Please Select
+                                                    Your Board</p>
                                         </td>
                                         <td>
                                             <input type="text" name="result" class="form-control">
@@ -432,9 +460,13 @@
                  <tr class="delete_whole_extra_item_add_training">
                                                 <td>
                                                     <input type="text" name="training_name[]" class=" form-control">
+                                                    <p style="display: none; color:red" id="error_training_name_${counter}">Please Input
+                                                    Your Training Name</p>
                                                 </td>
                                                 <td>
                                                     <input type="text" name="training_details[]" class=" form-control">
+                                                    <p style="display: none; color:red" id="error_training_details_${counter}">Please Input
+                                                    Your Training Details</p>
                                                 </td>
 
                                                 <td>
