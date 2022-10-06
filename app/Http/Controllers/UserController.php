@@ -53,21 +53,10 @@ class UserController extends Controller
         $thanas = DB::table('thanas')->where('district_id', $district_id)->get();
         return response()->json($thanas);
     }
-
+    // UserPost
     public function store(UserPost $request)
     {
-        // dd($request->toArray());
-
-        $validator =  $request->validated();
-        if (!($validator->passes())) {
-            return response()->json(
-                [
-                    'error' => $validator->errors()->all()
-                ]
-            );
-        }
-
-
+        dd($request->toArray());
         try {
             DB::transaction(function () use ($request) {
 

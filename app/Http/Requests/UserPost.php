@@ -35,8 +35,10 @@ class UserPost extends FormRequest
                 'exam_id.*' => 'required',
                 'board_id.*' => 'required',
                 'university_id.*' => 'required',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
-                'cv' => 'required|mimes:pdf,doc',
+                // 'image' => 'required|image|mimes:jpeg,png,jpg,gif',
+                'image' => 'required',
+                // 'cv' => 'required|mimes:pdf,doc',
+                'cv' => 'required',
                 'training_name' => 'nullable',
                 'training_details' => 'nullable',
     

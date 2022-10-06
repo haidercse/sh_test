@@ -115,7 +115,7 @@
                                         <label class="form-check-label" for="french">French</label>
                                     </div>
                                 </div>
-                                <p style="display: none; color:red" id="error_language">Please Select
+                                <p style="display: none; color:red" id="error_language">Please Select Any Or multiple
                                     Language</p>
                             </div>
                         </div>
@@ -137,7 +137,7 @@
                                     <tbody id="student_exam_info">
                                         <tr>
                                             <td>
-                                                <select class="custom-select" name="exam_id[]" id="exam_id">
+                                                <select class="custom-select" name="exam_id[]" id="exam_id_0">
                                                     <option value="">Select Exam</option>
                                                     @foreach ($exams as $exam)
                                                         <option value="{{ $exam->id }}">{{ $exam->name }}
@@ -149,7 +149,8 @@
 
                                             </td>
                                             <td>
-                                                <select class="custom-select" name="university_id[]" id="university_id">
+                                                <select class="custom-select" name="university_id[]"
+                                                    id="university_id_0">
                                                     <option value="">Select University</option>
                                                     @foreach ($univercities as $univercity)
                                                         <option value="{{ $univercity->id }}">{{ $univercity->name }}
@@ -161,7 +162,7 @@
                                                     Your University</p>
                                             </td>
                                             <td>
-                                                <select class="custom-select" name="board_id[]" id="board_id">
+                                                <select class="custom-select" name="board_id[]" id="board_id_0">
                                                     <option value="">Select Board</option>
 
                                                     @foreach ($boards as $board)
@@ -173,7 +174,10 @@
                                                     Your Board</p>
                                             </td>
                                             <td>
-                                                <input type="text" name="result" class="form-control">
+                                                <input type="text" id="result_0" name="result[]"
+                                                    class="form-control">
+                                                <p style="display: none; color:red" id="error_result_0">Please Input
+                                                    Your Result</p>
                                             </td>
                                             <td>
                                                 <span class="btn btn-success addeventmore" id="add_more">Add
@@ -244,15 +248,18 @@
                                         <tbody id="training">
                                             <tr>
                                                 <td>
-                                                    <input type="text" name="training_name[]" class=" form-control">
-                                                    <p style="display: none; color:red" id="error_training_name_0">Please Input
+                                                    <input type="text" name="training_name[]" class=" form-control"
+                                                        id="training_name_0">
+                                                    <p style="display: none; color:red" id="error_training_name_0">Please
+                                                        Input
                                                         Your Training Name</p>
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="training_details[]"
-                                                        class=" form-control">
-                                                        <p style="display: none; color:red" id="error_training_details_0">Please Input
-                                                            Your Training Details</p>
+                                                    <input type="text" name="training_details[]" class=" form-control"
+                                                        id="training_details_0">
+                                                    <p style="display: none; color:red" id="error_training_details_0">
+                                                        Please Input
+                                                        Your Training Details</p>
                                                 </td>
 
                                                 <td>
@@ -276,15 +283,6 @@
 @push('custom-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            // $("#registrationform").validate({
-            //     rules: {
-            //         "exam_id[]": "required"
-            //     },
-            //     messages: {
-            //         "exam_id[]": "Please select field option",
-            //     }
-            // });
-
 
             $("#submit_button").click(function(e) {
                 e.preventDefault();
@@ -294,10 +292,12 @@
                 var email = $("#email").val();
                 var address = $("#address").val();
                 var division_id = $("#division_id").val();
-                var distrcit_id = $("#distrcit_id").val();
+                var district_id = $("#district_id").val();
                 var thana_id = $("#thana_id").val();
                 var image = $("#file_image").val();
+                var image = image.replace(/C:\\fakepath\\/, '');
                 var cv = $("#file_cv").val();
+                var cv = cv.replace(/C:\\fakepath\\/, '');
 
 
                 var exam_id = $("select[name=\'exam_id[]\']")
@@ -313,6 +313,17 @@
                     .map(function() {
                         return $(this).val();
                     }).get();
+
+                var result = $('input[name="result[]"]').map(function() {
+                    return this.value; // $(this).val()
+                }).get();
+
+                // var language = $('input[type="checkbox" name="language[]"]').map(function() {
+                //     return this.value; // $(this).val()
+                // }).get();
+                var language = $('input[name="language[]"]:checked').map(function() {
+                    return this.value; // $(this).val()
+                }).get();
 
                 var training_name = $('input[name="training_name[]"]').map(function() {
                     return this.value; // $(this).val()
@@ -333,7 +344,7 @@
                 if (division_id == '') {
                     $("#error_division_id").css('display', 'block');
                 }
-                if (distrcit_id == '') {
+                if (district_id == '') {
                     $("#error_district_id").css('display', 'block');
                 }
                 if (thana_id == '') {
@@ -345,31 +356,78 @@
                 if (cv == '') {
                     $("#error_cv").css('display', 'block');
                 }
+                if (language == '') {
+                    $("#error_language").css('display', 'block');
+                } else {
+                    $("#error_language").css('display', 'none');
+                }
 
                 var exam_length = exam_id.length;
-                console.log(exam_length);
-                console.log('Exam id: ' + exam_id);
+
                 for (var i = 0; i < exam_length; i++) {
-                    if ($('#error_exam_id_' + i)) {
-                        $("#error_exam_id_" + i).css('display', 'block');
+                    if ($("#exam_id_" + i).val() == '') {
+                        if ($('#error_exam_id_' + i)) {
+                            $("#error_exam_id_" + i).css('display', 'block');
+                        }
                     }
                 }
-                // if (exam_id == '') {
+                var board_length = board_id.length;
 
-                //     $(".error_exam_id").css('display', 'block');
+                for (var i = 0; i < board_length; i++) {
+                    if ($("#board_id_" + i).val() == '') {
+                        if ($('#error_board_id_' + i)) {
+                            $("#error_board_id_" + i).css('display', 'block');
+                        }
+                    }
 
-                // }
+                }
 
+                var university_length = university_id.length;
+                for (var i = 0; i < university_length; i++) {
+                    if ($("#university_id_" + i).val() == '') {
+                        if ($('#error_university_id_' + i)) {
+                            $("#error_university_id_" + i).css('display', 'block');
+                        }
+                    }
+
+                }
+
+                var training_name_length = training_name.length;
+                for (var i = 0; i < training_name_length; i++) {
+                    if ($('#error_training_name_' + i)) {
+                        $("#error_training_name_" + i).css('display', 'block');
+                    }
+                }
+
+                var training_details_length = training_details.length;
+                for (var i = 0; i < training_details_length; i++) {
+                    if ($('#error_training_details_' + i)) {
+                        $("#error_training_details_" + i).css('display', 'block');
+                    }
+                }
+                var result_length = result.length;
+                for (var i = 0; i < result_length; i++) {
+                    if ($("#result_" + i).val() == '') {
+                        if ($('#error_result_' + i)) {
+                        $("#error_result_" + i).css('display', 'block');
+                    }
+                    }
+                   
+                }
                 $.ajax({
                     url: "{{ route('user.store') }}",
                     type: 'POST',
+                    enctype: 'multipart/form-data',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
                     data: {
                         _token: _token,
                         name: name,
                         email: email,
                         address: address,
                         division_id: division_id,
-                        distrcit_id: distrcit_id,
+                        district_id: district_id,
                         thana_id: thana_id,
                         image: image,
                         cv: cv,
@@ -385,7 +443,7 @@
 
                     },
                     error: function(response) {
-                        console.log(response.responseJSON.errors);
+                        // console.log(response.responseJSON.errors);
 
                         $(".print-error-msg").find("ul").html('');
                         $(".print-error-msg").css('display', 'block');
@@ -432,7 +490,9 @@
                                                     Your Board</p>
                                         </td>
                                         <td>
-                                            <input type="text" name="result" class="form-control">
+                                            <input type="text" name="result[]" id="result_${counter}" class="form-control">
+                                            <p style="display: none; color:red" id="error_result_${counter}">Please Input
+                                                    Your Result</p>
                                         </td>
                                         <td>
                                             <span class="btn btn-success addeventmore " id="add_more">Add</span>
@@ -459,12 +519,12 @@
             whole_extra_item_add_training += `
                  <tr class="delete_whole_extra_item_add_training">
                                                 <td>
-                                                    <input type="text" name="training_name[]" class=" form-control">
+                                                    <input type="text" name="training_name[]" class=" form-control" id="training_name_${counter}">
                                                     <p style="display: none; color:red" id="error_training_name_${counter}">Please Input
                                                     Your Training Name</p>
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="training_details[]" class=" form-control">
+                                                    <input type="text" name="training_details[]" class=" form-control" id="training_details_${counter}">
                                                     <p style="display: none; color:red" id="error_training_details_${counter}">Please Input
                                                     Your Training Details</p>
                                                 </td>
