@@ -8,9 +8,10 @@
     <div class="container-fluid">
         <div class="col-md-12">
             {{-- @include('backend.layouts.partials.message') --}}
-            <div class="alert alert-danger print-error-msg" style="display:none">
+            <div class="alert alert-danger print-error-msg mt-2" style="display:none">
                 <ul></ul>
             </div>
+            
             <div class="card">
                 <div class="card-header">
                     <h3>User Registration Form</h3>
@@ -261,7 +262,7 @@
 
             $("#submit_button").click(function(e) {
                 e.preventDefault();
-                alert("ok");
+
                 var _token = $("input[name='_token']").val();
                 var name = $("#name").val();
                 var email = $("#email").val();
@@ -292,7 +293,8 @@
                 var training_details = $('input[name="training_details[]"]').map(function() {
                     return this.value; // $(this).val()
                 }).get();
-
+                
+                
                 $.ajax({
                     url: "{{ route('user.store') }}",
                     type: 'POST',
@@ -312,24 +314,27 @@
                         training_name: training_name,
                         training_details: training_details,
                     },
-                    success: function(data) {
-                        if ($.isEmptyObject(data.error)) {
-                            alert(data.success);
-                        } else {
-                            printErrorMsg(data.error);
-                        }
+                    success: function(response) {
+                       console.log(response.responseJSON.success);
+                       alert(response.responseJSON.success);
+
+                    },
+                    error: function(response) {
+                        console.log(response.responseJSON.errors);
+
+                        $(".print-error-msg").find("ul").html('');
+                        $(".print-error-msg").css('display', 'block');
+                        $.each(response.responseJSON.errors, function(key, value) {
+                            $(".print-error-msg").find("ul").append('<li>' + value +
+                                '</li>');
+                        });
+
                     }
                 });
 
             });
 
-            function printErrorMsg(msg) {
-                $(".print-error-msg").find("ul").html('');
-                $(".print-error-msg").css('display', 'block');
-                $.each(msg, function(key, value) {
-                    $(".print-error-msg").find("ul").append('<li>' + value + '</li>');
-                });
-            }
+           
         });
 
 
@@ -373,7 +378,7 @@
             // $(".add_item").append(whole_extra_item_add);
             counter++;
         });
-        
+
         $(document).on("click", ".removeeventmore", function(event) {
             var whole_extra_item_add = $("#whole_extra_item_add").html();
             $(this).closest(".delete_whole_extra_item_add").remove();

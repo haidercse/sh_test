@@ -57,9 +57,17 @@ class UserController extends Controller
     public function store(UserPost $request)
     {
         // dd($request->toArray());
-      
-        // $request->validated();
-       
+
+        $validator =  $request->validated();
+        if (!($validator->passes())) {
+            return response()->json(
+                [
+                    'error' => $validator->errors()->all()
+                ]
+            );
+        }
+
+
         try {
             DB::transaction(function () use ($request) {
 
@@ -70,7 +78,7 @@ class UserController extends Controller
                 $user->password = Hash::make('12345678');
                 $user->address = $request->address;
                 $user->save();
-    
+
                 //division and district and thana
                 $mailing_address = new MailingAddress();
                 $mailing_address->user_id = $user->id;
@@ -78,7 +86,7 @@ class UserController extends Controller
                 $mailing_address->district_id = $request->district_id;
                 $mailing_address->thana_id = $request->thana_id;
                 $mailing_address->save();
-    
+
                 $language = [];
                 foreach ($request->language as $key => $lang) {
                     $language[] = [
@@ -87,7 +95,7 @@ class UserController extends Controller
                     ];
                 }
                 Language::insert($language);
-    
+
                 //education qualification
                 $education_exam = [];
                 foreach ($request->exam_id as $key => $exam) {
@@ -100,18 +108,17 @@ class UserController extends Controller
                     ];
                 }
                 EducationQualification::insert($education_exam);
-              
+
                 //image amd cv
                 $attachment = new Attachment();
                 $attachment->user_id = $user->id;
                 if ($request->has('image')) {
                     $image = $request->file('image');
-                   
-                        if ($image->getClientOriginalExtension() == 'png' || $image->getClientOriginalExtension() == 'jpeg' || $image->getClientOriginalExtension() == 'jpg') {
-                            $reImage = $this->file->upload($request, 'image', 'Photo');
-                            $attachment->image = $reImage;
-                        }
-                    
+
+                    if ($image->getClientOriginalExtension() == 'png' || $image->getClientOriginalExtension() == 'jpeg' || $image->getClientOriginalExtension() == 'jpg') {
+                        $reImage = $this->file->upload($request, 'image', 'Photo');
+                        $attachment->image = $reImage;
+                    }
                 }
                 if ($request->has('cv')) {
                     $image = $request->file('cv');
@@ -120,14 +127,14 @@ class UserController extends Controller
                         $attachment->cv = $reImage;
                     }
                 }
-             
+
                 $attachment->save();
-               
-                
-                $training =[];
+
+
+                $training = [];
                 if (isset($request->training_name)) {
                     foreach ($request->training_name as $key => $tr_name) {
-                        $training[] =[
+                        $training[] = [
                             'user_id' => $user->id,
                             'training_name' => $tr_name,
                             'training_details' =>  $request->training_details[$key],
@@ -135,14 +142,12 @@ class UserController extends Controller
                     }
                     Training::insert($training);
                 }
-    
             });
-    
+
             return back()->with('success', 'Data Submitted Successfully.');
         } catch (Exception $e) {
             return $e->getMessage();
         }
-       
     }
 
 
@@ -152,7 +157,6 @@ class UserController extends Controller
         $districts = District::all();
         $thanas = Thana::all();
         return view('user.list', compact('divisions', 'districts', 'thanas'));
-
     }
     public function showRegistrationListAjax(Request $request)
     {
@@ -168,29 +172,29 @@ class UserController extends Controller
             ->select('mailing_addresses.id as mailing_id', 'users.name as user_name', 'users.email as user_email', 'divisions.division_name as division', 'districts.district_name as district', 'thanas.thana_name as thana', 'mailing_addresses.created_at as insert_date')
 
             ->when($request->name, function ($query) use ($request, $name) {
-            $get_users = [];
-            $get_users = DB::table('users')
-                ->where('name', 'like', '%' . $name . '%')
-                ->pluck('id');
-            return $query->whereIn('mailing_addresses.user_id', $get_users);
-        })
+                $get_users = [];
+                $get_users = DB::table('users')
+                    ->where('name', 'like', '%' . $name . '%')
+                    ->pluck('id');
+                return $query->whereIn('mailing_addresses.user_id', $get_users);
+            })
             ->when($request->email, function ($query) use ($request, $email) {
-            $get_email = [];
-            $get_email = DB::table('users')
-                ->where('email', $email)
-                ->pluck('id');
-            return $query->whereIn('mailing_addresses.user_id', $get_email);
-        })
+                $get_email = [];
+                $get_email = DB::table('users')
+                    ->where('email', $email)
+                    ->pluck('id');
+                return $query->whereIn('mailing_addresses.user_id', $get_email);
+            })
             ->when($request->division_id, function ($query) use ($request) {
 
-            return $query->where('mailing_addresses.division_id', $request->division_id);
-        })
+                return $query->where('mailing_addresses.division_id', $request->division_id);
+            })
             ->when($request->district_id, function ($query) use ($request) {
-            return $query->where('mailing_addresses.district_id', $request->district_id);
-        })
+                return $query->where('mailing_addresses.district_id', $request->district_id);
+            })
             ->when($request->thana_id, function ($query) use ($request) {
-            return $query->where('mailing_addresses.thana_id', $request->thana_id);
-        })
+                return $query->where('mailing_addresses.thana_id', $request->thana_id);
+            })
 
             ->get();
 
@@ -199,36 +203,34 @@ class UserController extends Controller
             ->addIndexColumn()
 
             ->addColumn('_user_name', function ($row) {
-            return $row->user_name ?? '';
-        })
+                return $row->user_name ?? '';
+            })
             ->addColumn('_user_email', function ($row) {
-            return $row->user_email ?? '';
-        })
+                return $row->user_email ?? '';
+            })
             ->addColumn('_division', function ($row) {
-            return $row->division ?? '';
-        })
+                return $row->division ?? '';
+            })
             ->addColumn('_district', function ($row) {
-            return $row->district ?? '';
-        })
+                return $row->district ?? '';
+            })
             ->addColumn('_thana', function ($row) {
-            return $row->thana ?? '';
-        })
+                return $row->thana ?? '';
+            })
             ->addColumn('_insert_date', function ($row) {
-            return date('d-m-Y', strtotime($row->insert_date ?? ''));
-
-        })
+                return date('d-m-Y', strtotime($row->insert_date ?? ''));
+            })
             ->addColumn('action', function ($row) {
-            return '
+                return '
                 <a href="' . route('registration.edit', $row->mailing_id) . '" title="Edit" class="edit btn btn-primary">Edit</a>
                 ';
-        })
+            })
             ->rawColumns(['action'])
 
             ->make(true);
 
 
         return $result;
-
     }
 
     public function showRegistrationListEdit($id)
@@ -238,7 +240,6 @@ class UserController extends Controller
         $thanas = Thana::all();
         $mailing_address = MailingAddress::find($id);
         return view('user.edit', compact('mailing_address', 'divisions', 'districts', 'thanas'));
-
     }
 
     public function showRegistrationListUpdate(Request $request)
@@ -253,23 +254,26 @@ class UserController extends Controller
 
         MailingAddress::where('id', $request->mailing_address_id)
             ->update([
-            'division_id' => $request->division_id,
-            'district_id' => $request->district_id,
-            'thana_id' => $request->thana_id,
-        ]);
+                'division_id' => $request->division_id,
+                'district_id' => $request->district_id,
+                'thana_id' => $request->thana_id,
+            ]);
 
         return back()->with('success', 'data updated successfully.');
     }
 
-    public function getAllExam(){
+    public function getAllExam()
+    {
         $exam = Exam::all();
         return response()->json($exam);
     }
-    public function getAllBoard(){
+    public function getAllBoard()
+    {
         $board = Board::all();
         return response()->json($board);
     }
-    public function getAllUniversity(){
+    public function getAllUniversity()
+    {
         $university = University::all();
         return response()->json($university);
     }
