@@ -11,7 +11,7 @@
             <div class="alert alert-danger print-error-msg mt-2" style="display:none">
                 <ul></ul>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3>User Registration Form</h3>
@@ -26,9 +26,10 @@
                                 <div class="col-sm-10">
                                     <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                         id="name">
-
+                                        <p  style="display: none; color:red" id="error_name">Please Input Your Name
+                                        </p>
                                 </div>
-
+                               
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -37,8 +38,10 @@
                                 <div class="col-sm-10">
                                     <input type="email" name="email" value="{{ old('email') }}" class="form-control"
                                         id="email">
-
+                                        <p style="display: none; color:red" id="error_email">Please Input Your Email
+                                        </p>
                                 </div>
+                                
                             </div>
                         </div>
                         <hr>
@@ -52,8 +55,10 @@
                                         <option value="{{ $division->id }}">{{ $division->division_name }}</option>
                                     @endforeach
                                 </select>
-
+                                <p  style="display: none;color:red" id="error_division_id">Please Select
+                                    Division</p>
                             </div>
+
                             <div class="col-md-4">
                                 <select name="district_id" class="custom-select" id="district_id">
                                     <option value="">Select District</option>
@@ -61,7 +66,8 @@
                                         <option value="{{ $district->id }}">{{ $district->district_name }}</option>
                                     @endforeach
                                 </select>
-
+                                <p  style="display: none; color:red" id="error_district_id">Please Select
+                                    District</p>
                             </div>
                             <div class="col-md-4">
                                 <select name="thana_id" class="custom-select" id="thana_id">
@@ -70,7 +76,8 @@
                                         <option value="{{ $thana->id }}">{{ $thana->thana_name }}</option>
                                     @endforeach
                                 </select>
-
+                                <p style="display: none;color:red" id="error_thana_id">Please Select
+                                    UpoZilla/Thana</p>
                             </div>
                         </div>
                         <hr>
@@ -293,8 +300,24 @@
                 var training_details = $('input[name="training_details[]"]').map(function() {
                     return this.value; // $(this).val()
                 }).get();
-                
-                
+
+                if (name == '') {
+                    $("#error_name").css('display', 'block');
+
+                }
+                if (email == '') {
+                    $("#error_email").css('display', 'block');
+                }
+                if (division_id == '') {
+                    $("#error_division_id").css('display', 'block');
+                }
+                if (distrcit_id == '') {
+                    $("#error_district_id").css('display', 'block');
+                }
+                if (thana_id == '') {
+                    $("#error_thana_id").css('display', 'block');
+                }
+
                 $.ajax({
                     url: "{{ route('user.store') }}",
                     type: 'POST',
@@ -315,8 +338,8 @@
                         training_details: training_details,
                     },
                     success: function(response) {
-                       console.log(response.responseJSON.success);
-                       alert(response.responseJSON.success);
+                        console.log(response.responseJSON.success);
+                        alert(response.responseJSON.success);
 
                     },
                     error: function(response) {
@@ -334,7 +357,7 @@
 
             });
 
-           
+
         });
 
 
