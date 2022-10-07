@@ -12,7 +12,7 @@ class FileUpload{
         $dest = public_path($publicPath);
         $image->move($dest,$reImage);
 
-        return $reImage;
+        return $reImage ?? '';
     }
 
     

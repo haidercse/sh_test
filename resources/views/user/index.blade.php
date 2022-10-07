@@ -8,6 +8,7 @@
     <div class="container-fluid">
         <div class="col-md-12">
             {{-- @include('backend.layouts.partials.message') --}}
+            <p id="success_message" class="alert alert-success" style="display: none;">All Data Submitted Successfully.</p>
             <div class="alert alert-danger print-error-msg mt-2" style="display:none">
                 <ul></ul>
             </div>
@@ -18,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     {{-- action="{{ route('user.store') }}" --}}
-                    <for name="registrationform" method="POST" enctype="multipart/form-data" id="registration_form">
+                    <form method="POST" enctype="multipart/form-data" id="registration_form">
                         @csrf
                         <div class="col-md-12">
                             <div class="form-group row">
@@ -272,7 +273,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success" id="submit_button">Submit</button>
-                    </for>
+                    </form>
 
                 </div>
             </div>
@@ -283,9 +284,10 @@
 @push('custom-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-
-            $("#submit_button").click(function(e) {
+            
+            $("#registration_form").submit(function(e) {
                 e.preventDefault();
+
 
                 var _token = $("input[name='_token']").val();
                 var name = $("#name").val();
@@ -294,11 +296,30 @@
                 var division_id = $("#division_id").val();
                 var district_id = $("#district_id").val();
                 var thana_id = $("#thana_id").val();
-                var image = $("#file_image").val();
-                var image = image.replace(/C:\\fakepath\\/, '');
-                var cv = $("#file_cv").val();
-                var cv = cv.replace(/C:\\fakepath\\/, '');
 
+            
+                var image = $('input[name=image]').val()
+
+                var image_extension = image.substr((image.lastIndexOf('.') + 1));
+                if (image !== '') {
+                    if (image_extension == 'jpg' || image_extension == 'png' || image_extension == 'jpeg') {
+                        var image = image.replace(/C:\\fakepath\\/, '');
+                    } else {
+                        alert('Please Submit only image jpg,png,jepg');
+                        return;
+                    }
+                }
+
+                var cv =  $('input[name=cv]').val();
+                var cv_extension = cv.substr((cv.lastIndexOf('.') + 1));
+                if (cv !== '') {
+                    if (cv_extension == 'pdf' || cv_extension == 'doc' || cv_extension == 'docx') {
+                        var cv = cv.replace(/C:\\fakepath\\/, '');
+                    } else {
+                        alert('Please Submit only PDF,DOC,DOCX File');
+                        return;
+                    }
+                }
 
                 var exam_id = $("select[name=\'exam_id[]\']")
                     .map(function() {
@@ -318,9 +339,7 @@
                     return this.value; // $(this).val()
                 }).get();
 
-                // var language = $('input[type="checkbox" name="language[]"]').map(function() {
-                //     return this.value; // $(this).val()
-                // }).get();
+
                 var language = $('input[name="language[]"]:checked').map(function() {
                     return this.value; // $(this).val()
                 }).get();
@@ -337,25 +356,46 @@
                 if (name == '') {
                     $("#error_name").css('display', 'block');
 
+                } else {
+                    $("#error_name").css('display', 'none');
                 }
+
                 if (email == '') {
                     $("#error_email").css('display', 'block');
+                } else {
+                    $("#error_email").css('display', 'none');
                 }
+
                 if (division_id == '') {
                     $("#error_division_id").css('display', 'block');
+                } else {
+                    $("#error_division_id").css('display', 'none');
                 }
+
+
                 if (district_id == '') {
                     $("#error_district_id").css('display', 'block');
+                } else {
+                    $("#error_district_id").css('display', 'none');
                 }
                 if (thana_id == '') {
                     $("#error_thana_id").css('display', 'block');
+                } else {
+                    $("#error_thana_id").css('display', 'none');
                 }
+
                 if (image == '') {
                     $("#error_image").css('display', 'block');
+                } else {
+                    $("#error_image").css('display', 'none');
                 }
+
                 if (cv == '') {
                     $("#error_cv").css('display', 'block');
+                } else {
+                    $("#error_cv").css('display', 'none');
                 }
+
                 if (language == '') {
                     $("#error_language").css('display', 'block');
                 } else {
@@ -369,14 +409,23 @@
                         if ($('#error_exam_id_' + i)) {
                             $("#error_exam_id_" + i).css('display', 'block');
                         }
+                    } else {
+                        if ($('#error_exam_id_' + i)) {
+                            $("#error_exam_id_" + i).css('display', 'none');
+                        }
                     }
                 }
+
                 var board_length = board_id.length;
 
                 for (var i = 0; i < board_length; i++) {
                     if ($("#board_id_" + i).val() == '') {
                         if ($('#error_board_id_' + i)) {
                             $("#error_board_id_" + i).css('display', 'block');
+                        }
+                    } else {
+                        if ($('#error_board_id_' + i)) {
+                            $("#error_board_id_" + i).css('display', 'none');
                         }
                     }
 
@@ -388,62 +437,89 @@
                         if ($('#error_university_id_' + i)) {
                             $("#error_university_id_" + i).css('display', 'block');
                         }
+                    } else {
+                        if ($('#error_university_id_' + i)) {
+                            $("#error_university_id_" + i).css('display', 'none');
+                        }
                     }
 
-                }
-
-                var training_name_length = training_name.length;
-                for (var i = 0; i < training_name_length; i++) {
-                    if ($('#error_training_name_' + i)) {
-                        $("#error_training_name_" + i).css('display', 'block');
-                    }
-                }
-
-                var training_details_length = training_details.length;
-                for (var i = 0; i < training_details_length; i++) {
-                    if ($('#error_training_details_' + i)) {
-                        $("#error_training_details_" + i).css('display', 'block');
-                    }
                 }
                 var result_length = result.length;
                 for (var i = 0; i < result_length; i++) {
                     if ($("#result_" + i).val() == '') {
                         if ($('#error_result_' + i)) {
-                        $("#error_result_" + i).css('display', 'block');
+                            $("#error_result_" + i).css('display', 'block');
+                        }
+                    } else {
+                        if ($('#error_result_' + i)) {
+                            $("#error_result_" + i).css('display', 'none');
+                        }
                     }
-                    }
-                   
+
                 }
+                var training_name_length = training_name.length;
+                for (var i = 0; i < training_name_length; i++) {
+                    if ($("#training_name_" + i).val() == '') {
+                        if ($('#error_training_name_' + i)) {
+                            $("#error_training_name_" + i).css('display', 'block');
+                        }
+                    } else {
+                        if ($('#error_training_name_' + i)) {
+                            $("#error_training_name_" + i).css('display', 'none');
+                        }
+                    }
+                }
+
+                var training_details_length = training_details.length;
+                for (var i = 0; i < training_details_length; i++) {
+                    if ($("#training_details_" + i).val() == '') {
+                        if ($('#error_training_details_' + i)) {
+                            $("#error_training_details_" + i).css('display', 'block');
+                        }
+                    } else {
+                        if ($('#error_training_details_' + i)) {
+                            $("#error_training_details_" + i).css('display', 'none');
+                        }
+                    }
+                }
+                let formData = new FormData(this);
                 $.ajax({
                     url: "{{ route('user.store') }}",
                     type: 'POST',
-                    enctype: 'multipart/form-data',
-                    cache: false,
+                    dataType: "JSON",
                     contentType: false,
                     processData: false,
-                    data: {
-                        _token: _token,
-                        name: name,
-                        email: email,
-                        address: address,
-                        division_id: division_id,
-                        district_id: district_id,
-                        thana_id: thana_id,
-                        image: image,
-                        cv: cv,
-                        exam_id: exam_id,
-                        board_id: board_id,
-                        university_id: university_id,
-                        training_name: training_name,
-                        training_details: training_details,
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
+                    // data: {
+                    //     _token: _token,
+                    //     name: name,
+                    //     email: email,
+                    //     address: address,
+                    //     division_id: division_id,
+                    //     district_id: district_id,
+                    //     thana_id: thana_id,
+                    //     language: language,
+                    //     image: image,
+                    //     cv: cv,
+                    //     exam_id: exam_id,
+                    //     board_id: board_id,
+                    //     university_id: university_id,
+                    //     training_name: training_name,
+                    //     training_details: training_details,
+                    // },
                     success: function(response) {
-                        console.log(response.responseJSON.success);
-                        alert(response.responseJSON.success);
+                        // console.log(response.responseJSON.success);
+                        $("#success_message").css('display', 'block');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
 
                     },
                     error: function(response) {
-                        // console.log(response.responseJSON.errors);
+                        console.log(response.responseJSON.errors);
 
                         $(".print-error-msg").find("ul").html('');
                         $(".print-error-msg").css('display', 'block');
