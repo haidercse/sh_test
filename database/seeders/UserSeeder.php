@@ -25,14 +25,5 @@ class UserSeeder extends Seeder
 
 
         ]);
-        for ($i = 1; $i <= 10; $i++) {
-            User::create([
-                'name' => 'user_' . $i,
-                'email' => 'user_' . $i . '_@gmail.com',
-                'email_verified_at' => now(),
-                'password' => Hash::make('12345678'),
-                'address' => Str::random(15),
-            ]);
-        }
     }
 }

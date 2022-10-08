@@ -22,6 +22,8 @@
                     <form method="POST" enctype="multipart/form-data" id="registration_form">
                         @csrf
                         <div class="col-md-12">
+                            <input type="hidden" name="user_id" value="{{ $user->id }}">
+                            <input type="hidden" name="mailing_id" value="{{ $mailing_address->id }}">
                             <div class="form-group row">
                                 <label for="name" class="col-sm-2 col-form-label">Applicant's Name</label>
                                 <div class="col-sm-10">
@@ -143,14 +145,14 @@
                                     </thead>
                                     <tbody id="student_exam_info">
                                         @foreach ($education_qualifications as $item)
-                                       
                                             <tr>
                                                 <td>
                                                     <select class="custom-select" name="exam_id[]" id="exam_id_0">
                                                         <option value="">Select Exam</option>
                                                         @foreach ($exams as $exam)
-                                                     
-                                                            <option value="{{ $exam->id }}" {{ $item->exam->id == $exam->id ? 'selected' : '' }}>{{ $exam->name }}
+                                                            <option value="{{ $exam->id }}"
+                                                                {{ $item->exam->id == $exam->id ? 'selected' : '' }}>
+                                                                {{ $exam->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -163,7 +165,9 @@
                                                         id="university_id_0">
                                                         <option value="">Select University</option>
                                                         @foreach ($univercities as $univercity)
-                                                            <option value="{{ $univercity->id }}" {{ $item->university->id == $univercity->id ? 'selected' : '' }}>{{ $univercity->name }}
+                                                            <option value="{{ $univercity->id }}"
+                                                                {{ $item->university->id == $univercity->id ? 'selected' : '' }}>
+                                                                {{ $univercity->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -176,7 +180,9 @@
                                                         <option value="">Select Board</option>
 
                                                         @foreach ($boards as $board)
-                                                            <option value="{{ $board->id }}" {{ $item->board->id == $board->id ? 'selected' : '' }}>{{ $board->name }}
+                                                            <option value="{{ $board->id }}"
+                                                                {{ $item->board->id == $board->id ? 'selected' : '' }}>
+                                                                {{ $board->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -227,15 +233,18 @@
                                 <label for="name" class="col-sm-2 col-form-label">Training</label>
                                 <div class="col-sm-2">
                                     <div class="form-check">
+
                                         <input class="form-check-input" type="radio" name="exampleRadios"
-                                            id="yes" value="option1">
+                                            id="yes" value="option1"
+                                            @if ($trainings->count() > 0) checked @endif>
                                         <label class="form-check-label" for="yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="exampleRadios"
-                                            id="no" value="option2">
+                                            id="no" value="option2"
+                                            @if ($trainings->count() == 0) checked @endif>
                                         <label class="form-check-label" for="no">
                                             No
                                         </label>
@@ -244,7 +253,8 @@
 
                             </div>
                         </div>
-                        <div class="col-md-12" id="add_training" style="display: none">
+                        <div class="col-md-12" id="add_training"
+                            @if ($trainings->count() == 0) style="display: none @endif">
                             <div class="form-group row">
                                 <div class="col-md-2"></div>
                                 <div class="col-md-10">
@@ -257,26 +267,58 @@
                                             </tr>
                                         </thead>
                                         <tbody id="training">
-                                            <tr>
-                                                <td>
-                                                    <input type="text" name="training_name[]" class=" form-control"
-                                                        id="training_name_0">
-                                                    <p style="display: none; color:red" id="error_training_name_0">Please
-                                                        Input
-                                                        Your Training Name</p>
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="training_details[]" class=" form-control"
-                                                        id="training_details_0">
-                                                    <p style="display: none; color:red" id="error_training_details_0">
-                                                        Please Input
-                                                        Your Training Details</p>
-                                                </td>
+                                            @if ($trainings->count() > 0)
+                                                @foreach ($trainings as $training)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" name="training_name[]"
+                                                                class=" form-control" id="training_name_0"
+                                                                value="{{ $training->training_name }}">
+                                                            <p style="display: none; color:red"
+                                                                id="error_training_name_0">Please
+                                                                Input
+                                                                Your Training Name</p>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="training_details[]"
+                                                                class=" form-control" id="training_details_0"
+                                                                value="{{ $training->training_details }}">
+                                                            <p style="display: none; color:red"
+                                                                id="error_training_details_0">
+                                                                Please Input
+                                                                Your Training Details</p>
+                                                        </td>
 
-                                                <td>
-                                                    <span class="btn btn-success addeventmore_training">Add</span>
-                                                </td>
-                                            </tr>
+                                                        <td>
+                                                            <span class="btn btn-success addeventmore_training">Add</span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" name="training_name[]"
+                                                            class=" form-control" id="training_name_0" value="">
+                                                        <p style="display: none; color:red" id="error_training_name_0">
+                                                            Please
+                                                            Input
+                                                            Your Training Name</p>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="training_details[]"
+                                                            class=" form-control" id="training_details_0" value="">
+                                                        <p style="display: none; color:red" id="error_training_details_0">
+                                                            Please Input
+                                                            Your Training Details</p>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="btn btn-success addeventmore_training">Add</span>
+                                                    </td>
+                                                </tr>
+                                            @endif
+
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -297,8 +339,6 @@
 
             $("#registration_form").submit(function(e) {
                 e.preventDefault();
-
-
                 var _token = $("input[name='_token']").val();
                 var name = $("#name").val();
                 var email = $("#email").val();
@@ -306,12 +346,10 @@
                 var division_id = $("#division_id").val();
                 var district_id = $("#district_id").val();
                 var thana_id = $("#thana_id").val();
+                var image = $('#file_image').val();
 
-
-                var image = $('input[name=image]').val()
-
-                var image_extension = image.substr((image.lastIndexOf('.') + 1));
                 if (image !== '') {
+                    var image_extension = image.substr((image.lastIndexOf('.') + 1));
                     if (image_extension == 'jpg' || image_extension == 'png' || image_extension == 'jpeg') {
                         var image = image.replace(/C:\\fakepath\\/, '');
                     } else {
@@ -320,9 +358,9 @@
                     }
                 }
 
-                var cv = $('input[name=cv]').val();
-                var cv_extension = cv.substr((cv.lastIndexOf('.') + 1));
+                var cv = $('#file_cv').val();
                 if (cv !== '') {
+                    var cv_extension = cv.substr((cv.lastIndexOf('.') + 1));
                     if (cv_extension == 'pdf' || cv_extension == 'doc' || cv_extension == 'docx') {
                         var cv = cv.replace(/C:\\fakepath\\/, '');
                     } else {
@@ -396,12 +434,16 @@
 
                 if (image == '') {
                     $("#error_image").css('display', 'block');
+                    alert('Plase Upload Image. image file can not be null');
+                    return;
                 } else {
                     $("#error_image").css('display', 'none');
                 }
 
                 if (cv == '') {
                     $("#error_cv").css('display', 'block');
+                    alert('Plase Upload Cv. Cv file can not be null');
+                    return;
                 } else {
                     $("#error_cv").css('display', 'none');
                 }
@@ -523,6 +565,7 @@
                     success: function(response) {
                         // console.log(response.responseJSON.success);
                         $("#success_message").css('display', 'block');
+                        $(".print-error-msg").css('display', 'none');
                         setTimeout(() => {
                             location.reload();
                         }, 2000);

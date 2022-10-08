@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserPost;
+use App\Http\Requests\UserUpdatePost;
 use App\Models\Attachment;
 use App\Models\Board;
 use App\Models\District;
@@ -17,6 +18,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Services\FileUpload;
 use Exception;
+use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -62,11 +64,10 @@ class UserController extends Controller
                 $user = new User();
                 $user->name = $request->name;
                 $user->email = $request->email;
-                $user->name = $request->name;
                 $user->password = Hash::make('12345678');
                 $user->address = $request->address;
                 $user->save();
-               
+
                 //division and district and thana
                 $mailing_address = new MailingAddress();
                 $mailing_address->user_id = $user->id;
@@ -74,7 +75,7 @@ class UserController extends Controller
                 $mailing_address->district_id = $request->district_id;
                 $mailing_address->thana_id = $request->thana_id;
                 $mailing_address->save();
-                
+
 
                 $language = [];
                 foreach ($request->language as $key => $lang) {
@@ -85,7 +86,7 @@ class UserController extends Controller
                         'updated_at' => now(),
                     ];
                 }
-               
+
                 Language::insert($language);
 
                 //education qualification
@@ -105,26 +106,26 @@ class UserController extends Controller
                 EducationQualification::insert($education_exam);
 
                 //image amd cv
-                
+
                 $attachment = new Attachment();
                 $attachment->user_id = $user->id;
                 if ($request->has('image')) {
-                    $reImage = $this->file->upload($request,'image','image');
-                    
+                    $reImage = $this->file->upload($request, 'image', 'image');
+
                     // save in database
                     $attachment->image = $reImage;
-        
+
                 }
                 if ($request->has('cv')) {
-                    $reImage = $this->file->upload($request,'cv','CV');
-                  
+                    $reImage = $this->file->upload($request, 'cv', 'CV');
+
                     // save in database
                     $attachment->cv = $reImage;
-        
+
                 }
-              
+
                 $attachment->save();
-              
+
 
                 $training = [];
                 if (isset($request->training_name)) {
@@ -154,7 +155,7 @@ class UserController extends Controller
 
     public function showRegistrationList()
     {
-        
+
         $divisions = Division::all();
         $districts = District::all();
         $thanas = Thana::all();
@@ -244,31 +245,132 @@ class UserController extends Controller
         $districts = District::all();
         $thanas = Thana::all();
         $mailing_address = MailingAddress::find($id);
-        $user = User::where('id',$mailing_address->user_id)->first();
-        $languages =  Language::where('user_id',$user->id)->pluck('language')->toArray();
-        $education_qualifications = EducationQualification::where('user_id',$user->id)->get();
-// dd($education_qualifications);
-        return view('user.edit', compact('mailing_address', 'divisions', 'districts', 'thanas','exams','boards','univercities','user','languages','education_qualifications'));
+        $user = User::where('id', $mailing_address->user_id)->first();
+        $languages = Language::where('user_id', $user->id)->pluck('language')->toArray();
+        $education_qualifications = EducationQualification::where('user_id', $user->id)->get();
+        $trainings = Training::where('user_id', $user->id)->get();
+
+        return view('user.edit', compact('mailing_address', 'divisions', 'districts', 'thanas', 'exams', 'boards', 'univercities', 'user', 'languages', 'education_qualifications', 'trainings'));
     }
 
-    public function showRegistrationListUpdate(Request $request)
+    public function showRegistrationListUpdate(UserUpdatePost $request)
     {
 
-        $request->validate([
-            'division_id' => 'required',
-            'district_id' => 'required',
-            'thana_id' => 'required',
+        try {
+            DB::transaction(function () use ($request) {
 
-        ]);
+                $user_id = $request->user_id;
+                $mailing_address_id = $request->mailing_id;
 
-        MailingAddress::where('id', $request->mailing_address_id)
-            ->update([
-            'division_id' => $request->division_id,
-            'district_id' => $request->district_id,
-            'thana_id' => $request->thana_id,
-        ]);
+                User::where('id', $user_id)->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'address' => $request->address,
+                ]);
 
-        return back()->with('success', 'data updated successfully.');
+                MailingAddress::where('id', $mailing_address_id)
+                    ->update([
+                    'division_id' => $request->division_id,
+                    'district_id' => $request->district_id,
+                    'thana_id' => $request->thana_id,
+                ]);
+
+                $language = [];
+                foreach ($request->language as $key => $lang) {
+                    $language[] = [
+                        'user_id' => $user_id,
+                        'language' => $lang ?? '',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                DB::table('languages')
+                    ->where('user_id', $user_id)
+                    ->delete();
+
+                DB::table('languages')
+                    ->where('user_id', $user_id)
+                    ->insert($language);
+
+                //education qualification
+                $education_exam = [];
+                foreach ($request->exam_id as $key => $exam) {
+                    $education_exam[] = [
+                        'user_id' => $user_id,
+                        'exam_id' => $exam ?? '',
+                        'board_id' => $request->board_id[$key] ?? '',
+                        'university_id' => $request->university_id[$key] ?? '',
+                        'result' => $request->result[$key] ?? '',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                DB::table('education_qualifications')
+                ->where('user_id', $user_id)->delete();
+                //dd($education_exam);
+                DB::table('education_qualifications')
+                    ->where('user_id', $user_id)
+                    ->insert($education_exam);
+
+                //image amd cv
+
+               Attachment::where('user_id', $user_id)->delete();
+
+               $attachment = new Attachment();
+               $attachment->user_id = $user_id;
+                if ($request->has('image')) {
+                    if (File::exists('image' . $attachment->image)) {
+                        File::delete('image' . $attachment->image);
+                    }
+                    $reImage = $this->file->upload($request, 'image', 'image');
+
+                    // save in database
+                    $attachment->image = $reImage;
+
+                }
+                if ($request->has('cv')) {
+                    if (File::exists('CV' . $attachment->cv)) {
+                        File::delete('CV' . $attachment->cv);
+                    }
+                    $reImage = $this->file->upload($request, 'cv', 'CV');
+
+                    // save in database
+                    $attachment->cv = $reImage;
+
+                }
+
+                $attachment->save();
+
+
+                $training = [];
+                if (isset($request->training_name)) {
+                    foreach ($request->training_name as $key => $tr_name) {
+                        $training[] = [
+                            'user_id' =>$user_id,
+                            'training_name' => $tr_name ?? '',
+                            'training_details' => $request->training_details[$key] ?? '',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    DB::table('trainings')
+                        ->where('user_id', $user_id)
+                        ->delete();
+                        
+                    DB::table('trainings')
+                        ->where('user_id', $user_id)
+                        ->insert($training);
+                }
+            });
+
+            return response()->json([
+                'success' => true,
+                'code' => 200,
+            ]);
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function getAllExam()

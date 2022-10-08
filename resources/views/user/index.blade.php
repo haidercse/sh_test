@@ -287,8 +287,6 @@
             
             $("#registration_form").submit(function(e) {
                 e.preventDefault();
-
-
                 var _token = $("input[name='_token']").val();
                 var name = $("#name").val();
                 var email = $("#email").val();
@@ -297,11 +295,10 @@
                 var district_id = $("#district_id").val();
                 var thana_id = $("#thana_id").val();
 
-            
-                var image = $('input[name=image]').val()
-
-                var image_extension = image.substr((image.lastIndexOf('.') + 1));
+                var image = $('#file_image').val();
+               
                 if (image !== '') {
+                    var image_extension = image.substr((image.lastIndexOf('.') + 1));
                     if (image_extension == 'jpg' || image_extension == 'png' || image_extension == 'jpeg') {
                         var image = image.replace(/C:\\fakepath\\/, '');
                     } else {
@@ -310,9 +307,9 @@
                     }
                 }
 
-                var cv =  $('input[name=cv]').val();
-                var cv_extension = cv.substr((cv.lastIndexOf('.') + 1));
+                var cv =  $('#file_cv').val();
                 if (cv !== '') {
+                    var cv_extension = cv.substr((cv.lastIndexOf('.') + 1));
                     if (cv_extension == 'pdf' || cv_extension == 'doc' || cv_extension == 'docx') {
                         var cv = cv.replace(/C:\\fakepath\\/, '');
                     } else {
@@ -513,6 +510,7 @@
                     success: function(response) {
                         // console.log(response.responseJSON.success);
                         $("#success_message").css('display', 'block');
+                        $(".print-error-msg").css('display', 'none');
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
