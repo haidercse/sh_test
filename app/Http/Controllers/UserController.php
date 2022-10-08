@@ -306,31 +306,34 @@ class UserController extends Controller
                     ];
                 }
                 DB::table('education_qualifications')
-                ->where('user_id', $user_id)->delete();
+                    ->where('user_id', $user_id)->delete();
                 //dd($education_exam);
                 DB::table('education_qualifications')
                     ->where('user_id', $user_id)
                     ->insert($education_exam);
 
                 //image amd cv
+                $delete_attachment = Attachment::where('user_id', $user_id)->first();
+              
+                Attachment::where('user_id', $user_id)->delete();
 
-               Attachment::where('user_id', $user_id)->delete();
-
-               $attachment = new Attachment();
-               $attachment->user_id = $user_id;
+                $attachment = new Attachment();
+                $attachment->user_id = $user_id;
                 if ($request->has('image')) {
-                    if (File::exists('image' . $attachment->image)) {
-                        File::delete('image' . $attachment->image);
+                    if (File::exists('image/' . $delete_attachment->image)) {
+                        File::delete('image/' . $delete_attachment->image);
+                    }else
+                    {
+                        dd('ok');
                     }
                     $reImage = $this->file->upload($request, 'image', 'image');
-
                     // save in database
                     $attachment->image = $reImage;
 
                 }
                 if ($request->has('cv')) {
-                    if (File::exists('CV' . $attachment->cv)) {
-                        File::delete('CV' . $attachment->cv);
+                    if (File::exists('CV/' . $delete_attachment->cv)) {
+                        File::delete('CV/' . $delete_attachment->cv);
                     }
                     $reImage = $this->file->upload($request, 'cv', 'CV');
 
@@ -346,7 +349,7 @@ class UserController extends Controller
                 if (isset($request->training_name)) {
                     foreach ($request->training_name as $key => $tr_name) {
                         $training[] = [
-                            'user_id' =>$user_id,
+                            'user_id' => $user_id,
                             'training_name' => $tr_name ?? '',
                             'training_details' => $request->training_details[$key] ?? '',
                             'created_at' => now(),
@@ -356,7 +359,7 @@ class UserController extends Controller
                     DB::table('trainings')
                         ->where('user_id', $user_id)
                         ->delete();
-                        
+
                     DB::table('trainings')
                         ->where('user_id', $user_id)
                         ->insert($training);
